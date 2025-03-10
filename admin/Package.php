@@ -118,13 +118,70 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
                                     </select>
                                 </div>
 
-                                <div class="mb-3">
+                                <label for="city">Select City:</label>
+                                <select id="city" name="city" class="form-control" required
+                                    onchange="fetchDetails(this.value)">
+                                    <option value="">Select City</option>
+                                    <?php
+                                    $result = $db->query("SELECT DISTINCT city FROM hotels UNION SELECT DISTINCT departure_airport FROM flights UNION SELECT DISTINCT city FROM cabs");
+                                    while ($row = $result->fetch_assoc()) {
+                                        if ($row['city'] != "") {
+                                            echo "<option value='" . $row['city'] . "'>" . $row['city'] . "</option>";
+                                        }
+                                    }
+                                    ?>
+                                </select>
+
+
+
+                                <div id="results">
+                                    <h4>Available Hotels</h4>
+                                    <div id="hotels-list"></div>
+
+                                    <h4>Available Flights</h4>
+                                    <div id="flights-list"></div>
+
+                                    <h4>Available Cabs</h4>
+                                    <div id="cabs-list"></div>
+                                </div>
+
+
+                                <script>
+                                    function fetchDetails(city) {
+                                        if (city === "") {
+                                            document.getElementById("hotels-list").innerHTML = "<select class='form-control' name='hotel_id'><option value=''>No Option</option></select>";
+                                            document.getElementById("flights-list").innerHTML = "<select class='form-control' name='hotel_id'><option value=''>No Option</option></select>";
+                                            document.getElementById("cabs-list").innerHTML = "<select class='form-control' name='hotel_id'><option value=''>No Option</option></select>";
+                                            return;
+                                        }
+                                        var xhr = new XMLHttpRequest();
+                                        xhr.open("GET", "fetch_data.php?city=" + city, true);
+
+                                        // var response = JSON.parse(xhr.responseText)
+
+                                        // console.log(response);
+
+                                        xhr.onreadystatechange = function () {
+                                            if (xhr.readyState === 4 && xhr.status === 200) {
+                                                var response = JSON.parse(xhr.responseText);
+                                                document.getElementById("hotels-list").innerHTML = response.hotels;
+                                                document.getElementById("flights-list").innerHTML = response.flights;
+                                                document.getElementById("cabs-list").innerHTML = response.cabs;
+                                            }
+                                        };
+                                        xhr.send();
+                                    }
+                                </script>
+
+                                <!-- <div class="mb-3">
                                     <label class="form-label">Select Hotel</label>
                                     <select name="hotel_id" class="form-control" required>
                                         <option value="">Choose...</option>
-                                        <?php while ($row = $hotels->fetch_assoc()) {
-                                            echo "<option value='{$row['id']}'>{$row['name']}</option>";
-                                        } ?>
+                                        <?php
+                                        // while ($row = $hotels->fetch_assoc()) {
+                                        // echo "<option value='{$row['id']}'>{$row['name']}</option>";
+                                        // }
+                                        ?>
                                     </select>
                                 </div>
 
@@ -132,9 +189,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
                                     <label class="form-label">Select Cab</label>
                                     <select name="cab_id" class="form-control" required>
                                         <option value="">Choose...</option>
-                                        <?php while ($row = $cabs->fetch_assoc()) {
-                                            echo "<option value='{$row['id']}'>{$row['cab_name']}</option>";
-                                        } ?>
+                                        <?php
+                                        // while ($row = $cabs->fetch_assoc()) {
+                                        //     echo "<option value='{$row['id']}'>{$row['cab_name']}</option>";
+                                        // }
+                                        ?>
                                     </select>
                                 </div>
 
@@ -142,11 +201,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
                                     <label class="form-label">Select Flight</label>
                                     <select name="flight_id" class="form-control" required>
                                         <option value="">Choose...</option>
-                                        <?php while ($row = $flights->fetch_assoc()) {
-                                            echo "<option value='{$row['id']}'>{$row['flight_number']}</option>";
-                                        } ?>
+                                        <?php
+                                        // while ($row = $flights->fetch_assoc()) {
+                                        //     echo "<option value='{$row['id']}'>{$row['flight_number']}</option>";
+                                        // }
+                                        ?>
                                     </select>
-                                </div>
+                                </div> -->
 
                                 <div class="mb-3">
                                     <label class="form-label">No of Days</label>
@@ -268,7 +329,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
                                     <td><?= $row['breakfast'] ? 'Yes' : 'No' ?></td>
                                     <td><?= $row['dinner'] ? 'Yes' : 'No' ?></td>
                                     <td><?= $row['total_amount'] ?></td>
-                                    <td><button class="btn btn-danger btn-sm">Delete</button></td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                        <button class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#imageModal'
+                                            onclick="setPackageId(<?= $row['id'] ?>)">Images</button>
+                                    </td>
                                 </tr>
                             <?php } ?>
                         </tbody>
@@ -277,6 +342,88 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
             </div>
         </div>
     </div>
+
+
+    <!-- Image Upload Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Upload Package Images</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Left Side: Upload Form -->
+                        <div class="col-md-5">
+                            <form id="imageUploadForm" enctype="multipart/form-data">
+                                <input type="hidden" id="package_id" name="package_id">
+
+                                <label for="cover_image">Cover Image:</label>
+                                <input type="file" name="cover_image" class="form-control mb-2" required>
+
+                                <label for="images">Additional Images:</label>
+                                <input type="file" name="images[]" class="form-control" multiple>
+
+                                <button type="submit" class="btn btn-success mt-3">Upload</button>
+                            </form>
+                        </div>
+
+                        <!-- Right Side: Uploaded Images Grid -->
+                        <div class="col-md-7">
+                            <div class="row" id="uploadedImages">
+                                <!-- Images will be dynamically loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setPackageId(id) {
+            document.getElementById('package_id').value = id;
+            fetchUploadedImages(id);
+        }
+
+        function fetchUploadedImages(packageId) {
+            fetch('fetch_images.php?package_id=' + packageId)
+                .then(response => response.json())
+                .then(data => {
+                    let imageContainer = document.getElementById('uploadedImages');
+                    imageContainer.innerHTML = ''; // Clear existing images
+                    if (data.length > 0) {
+                        data.forEach(image => {
+                            imageContainer.innerHTML += `
+                        <div class="col-4 mb-2">
+                            <img src="${image.image_path}" class="img-fluid rounded" style="width:100%; height:100px; object-fit:cover;">
+                        </div>
+                    `;
+                        });
+                    } else {
+                        imageContainer.innerHTML = '<p class="text-muted">No images uploaded yet.</p>';
+                    }
+                });
+        }
+
+        document.getElementById('imageUploadForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+
+            fetch('upload_images.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                    fetchUploadedImages(document.getElementById('package_id').value);
+                });
+        });
+    </script>
+
+
 
     <?php
     include "Footer.php";

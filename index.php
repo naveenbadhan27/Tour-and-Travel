@@ -1,4 +1,5 @@
 <?php
+session_start();
 include "./config.php";
 
 // Fetch packages based on type
@@ -31,7 +32,7 @@ $latest_packages = $result_latest->fetch_all(MYSQLI_ASSOC);
 
 <body>
     <?php
-        include 'Header.php';
+    include 'Header.php';
     ?>
 
 
@@ -54,7 +55,7 @@ $latest_packages = $result_latest->fetch_all(MYSQLI_ASSOC);
         </div>
     </div> -->
 
-    <div class="row m-0 bg-light">
+    <!-- <div class="row m-0 bg-light">
         <div class="col-lg-3">
             <div class="card">
                 <div class="card-body">
@@ -83,9 +84,9 @@ $latest_packages = $result_latest->fetch_all(MYSQLI_ASSOC);
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
-    <div class="container mt-4">
+    <div class="container">
         <!-- Search Section -->
         <div class="p-5 mb-4 bg-light rounded-3 text-center">
             <h1 class="display-5 fw-bold">Find Your Perfect Trip</h1>

@@ -17,14 +17,17 @@ if (isset($_POST['add_cabs'])) {
     $cab_type = $_POST['cab_type'];
     $seating_capacity = $_POST['seating_capacity'];
     $fare_per_km = $_POST['fare_per_km'];
+    $city = $_POST['city'];
+    // $sql = "INSERT INTO cabs (name, type, price, city) VALUES ('$name', '$type', '$price', '$city')";
 
-    $sql = "INSERT INTO cabs (cab_name, driver_name, contact, cab_number, cab_type, seating_capacity, fare_per_km) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO cabs (cab_name, driver_name, contact, cab_number, cab_type, seating_capacity, fare_per_km, city) 
+                VALUES ('$cab_name', '$driver_name', '$contact', '$cab_number', '$cab_type', '$seating_capacity', '$fare_per_km', '$city')";
 
-    $stmt = $db->prepare($sql);
-    $stmt->bind_param("sssssid", $cab_name, $driver_name, $contact, $cab_number, $cab_type, $seating_capacity, $fare_per_km);
+    // $stmt = $db->prepare($sql);
+    // $stmt->bind_param("sssssid", $cab_name, $driver_name, $contact, $cab_number, $cab_type, $seating_capacity, $fare_per_km, $city);
+    $ins = $db->query($sql);
 
-    if ($stmt->execute()) {
+    if ($ins) {
         echo "<script>alert('Cab added successfully!'); window.location.href='Cabs.php';</script>";
     } else {
         echo "<script>alert('Error adding cab');</script>";
@@ -115,6 +118,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
                                         <input type="number" name="fare_per_km" class="form-control" step="0.01"
                                             required>
                                     </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" for="city">City</label>
+                                        <input type="text" name="city" class="form-control" required>
+                                    </div>
+
                                 </div>
                                 <button type="submit" name="add_cabs" class="btn btn-primary">Add Cab</button>
                             </form>
@@ -135,6 +143,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
                                 <th>Cab Type</th>
                                 <th>Seating Capacity</th>
                                 <th>Fare per KM</th>
+                                <th>City</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -153,6 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
                                 <td>{$row['cab_type']}</td>
                                 <td>{$row['seating_capacity']}</td>
                                 <td>{$row['fare_per_km']}</td>
+                                <td>{$row['city']}</td>
                                 <td>
                                     <form method='POST' action='' onsubmit='return confirm(\"Are you sure you want to delete this cab?\");'>
                                         <input type='hidden' name='id' value='{$row['id']}'>

@@ -4,7 +4,7 @@ session_start();
 include "./../config.php";
 
 if (!isset($_SESSION['login_admin'])) {
-    header('location: Dashboard.php');
+    header('location: index.php');
 }
 
 $sql = "SELECT 
