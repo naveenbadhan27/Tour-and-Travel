@@ -1,0 +1,30 @@
+.home {
+    height: 50vh;
+    background: linear-gradient(to left, rgb(0, 0, 0, .3), rgb(0, 0, 0, .3)), url("https://png.pngtree.com/background/20210712/original/pngtree-world-travel-picture-image_1185773.jpg");
+    background-size: 100% auto;
+    background-position: center;
+}
+
+.hover-bg {
+    width: 95%;
+    margin: auto;
+    background: rgba(0, 0, 0, 0.51);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.icon {
+    width: 50px;
+}
+
+.h-custom {
+    height: calc(100% - 73px);
+}
+
+.bg1 {
+    background: url("https://cdn.wallpapersafari.com/2/6/MoXhwt.jpg");
+    background-size: 100% auto;
+}

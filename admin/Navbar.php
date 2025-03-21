@@ -56,7 +56,7 @@
                 <li class="dropdown pc-h-item header-user-profile">
                     <a class="pc-head-link head-link-primary dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
                         href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                        <img src="./assets/images/user/avatar-1.jpg" alt="user-image" class="user-avtar" />
+                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="user-image" class="user-avtar" />
                         <span>
                             <i class="ti ti-settings"></i>
                         </span>
